@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant/ui/detail_review.dart';
 import 'package:restaurant/ui/details_drinks.dart';
 import 'package:restaurant/ui/details_foods.dart';
 import 'package:restaurant/ui/splashscreen.dart';
@@ -24,9 +25,10 @@ class MyApp extends StatelessWidget {
       routes: {
         Splashscreen.routeName: (context) => Splashscreen(),
         HomePage.routeName: (context) => HomePage(),
-        DetailRestaurant.routeName: (context) => DetailRestaurant(restaurant: ModalRoute.of(context).settings.arguments,),
+        DetailRestaurant.routeName: (context) => DetailRestaurant(restaurant: ModalRoute.of(context).settings.arguments),
         DetailFoods.routeName: (context) => DetailFoods(menus: ModalRoute.of(context).settings.arguments,),
         DetailDrinks.routeName: (context) => DetailDrinks(menus: ModalRoute.of(context).settings.arguments),
+        DetailReviewer.routeName: (context) => DetailReviewer(restaurantDetail: ModalRoute.of(context).settings.arguments),
       },
     );
   }

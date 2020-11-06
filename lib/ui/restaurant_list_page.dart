@@ -2,28 +2,53 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:restaurant/Model/restaurant.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/restaurants_result.dart';
 import 'package:restaurant/ui/detail_restaurant.dart';
 
-class RestaurantListPage extends StatelessWidget {
+class RestaurantListPage extends StatefulWidget {
+
+  @override
+  _RestaurantListPage createState() => _RestaurantListPage();
+}
+
+class _RestaurantListPage extends State<RestaurantListPage> {
+
+  Future<RestaurantsResult> restaurantResult;
+
+  @override
+  void initState() {
+    restaurantResult = ApiService().list();
+    super.initState();
+  }
+
   Widget _buildList(BuildContext context) {
-    return new FutureBuilder<String>(
-      future: DefaultAssetBundle.of(context).loadString('assets/local_restaurant.json'),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Restaurant> restaurant = parseRestaurant(snapshot.data);
-          return ListView.builder(
-            itemCount: restaurant.length,
-            itemBuilder: (context, index) {
-              return _buildRestaurantItem(context, restaurant[index]);
-            },
-          );
-        } else  {
-          return new Text ('');
+    return FutureBuilder(
+      future: restaurantResult,
+      builder: (context, AsyncSnapshot<RestaurantsResult> snapshot) {
+        var state = snapshot.connectionState;
+        if (state != ConnectionState.done){
+          return Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.restaurants.length,
+              itemBuilder: (context, index) {
+                var rest = snapshot.data.restaurants[index];
+                //return new Text(rest.name);
+                return _buildRestaurantItem(context, rest);
+              },
+            );
+          } else if(snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          } else{
+            return Text ('Error');
+          }
         }
       },
     );
   }
+
 
   Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
     return Padding(
@@ -50,7 +75,7 @@ class RestaurantListPage extends StatelessWidget {
                         bottomRight: Radius.circular(10),
                       ),
                       child: Image.network(
-                        restaurant.pictureId,
+                        'https://restaurant-api.dicoding.dev/images/medium/'+restaurant.pictureId,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -110,6 +135,8 @@ class RestaurantListPage extends StatelessWidget {
       ),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {

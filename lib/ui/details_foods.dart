@@ -1,5 +1,6 @@
+
 import 'package:flutter/material.dart';
-import 'package:restaurant/Model/menus.dart';
+import 'package:restaurant/data/model/restaurant_details.dart';
 
 class DetailFoods extends StatelessWidget {
 
@@ -30,7 +31,7 @@ class DetailFoods extends StatelessWidget {
     );
   }
 
-  Widget _buildFoodItem(BuildContext context, Food food){
+  Widget _buildFoodItem(BuildContext context, Menu food){
     return Padding(
       padding: EdgeInsets.only(top: 4.0, bottom: 4.0),
       child: Card(
